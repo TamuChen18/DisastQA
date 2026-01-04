@@ -29,33 +29,24 @@ DisastQA bridges this gap by providing a retrieval-aware, factual, and human-val
 - **Dual QA Tracks**:
   - MCQ: Tests discriminative reasoning and factual discrimination.
   - OE: Tests factual completeness, keypoint recall, and reasoning depth.
-- **Comprehensive Evaluation**: 18 LLMs (0.6B–8B + APIs) benchmarked under consistent retrieval contexts.
+- **Comprehensive Evaluation**: 20 LLMs (0.6B–8B + APIs) benchmarked under consistent retrieval contexts.
 
 ---
 
 ## 🧩 Repository Structure
 
+The repository focuses on the evaluation datasets and scoring scripts to facilitate reproducibility of the paper's results.
+
 ```
 DisastQA/
-├── benchmark/
-│   ├── MCQ/
-│   │   ├── data_prepare.py
-│   │   └── generate_mcq_set.py
-│   └── OE/
-│       ├── generate_oe_set.py
-│       └── generate_oe_from_mcq.py
-│
 ├── DATA/
-│   ├── final_mcq/                   # base_2000.json, mix_2000.json, golden_2000.json
-│   ├── final_OE/                    # base/mix/golden_oe_with_difficulty.json
-│   ├── local_MCQ/                   # model-specific MCQ results
-│   ├── local_OE/                    # model-specific OE results
-│   ├── MCQ_evaluation/              # evaluation scripts (local/closed)
-│   ├── OE_evaluation/               # evaluation scripts (local/difficulty)
-│   └── raw_annotations/             # annotation/intermediate artifacts
+│   ├── final_mcq/                   # Dataset: base_2000.json, mix_2000.json, golden_2000.json
+│   ├── final_OE/                    # Dataset: base/mix/golden_oe_with_difficulty.json
+│   ├── MCQ_evaluation/              # Scripts: evaluation for MCQ (accuracy)
+│   └── OE_evaluation/               # Scripts: evaluation for OE (keypoint coverage)
 │
 ├── assets/
-│   └── pipeline.png                 # Pipeline diagram
+│   └── pipeline.png                 # Figure: Pipeline diagram
 │
 ├── requirements.txt
 ├── LICENSE
@@ -66,12 +57,14 @@ DisastQA/
 
 ## ⚙️ Data Pipeline Summary
 
+To construct DisastQA, we employed a Human-LLM collaborative pipeline (detailed in the paper):
+
 1. **Extraction**: Extract (query, passage) pairs with relevance score = 3 from DisastIR corpus.
 2. **Drafting**: Use an LLM to rewrite queries → QA-style questions (MCQ/OE).
 3. **Refinement**: Human annotators rewrite, validate, and construct distractors or reference answers.
 4. **Validation**: Verify every item through multi-annotator solve-checking and consensus resolution.
 5. **Stratification**: Generate difficulty levels via keypoint count (OE).
-6. **Evaluation**: Evaluate 18 models under Base, Mix, and Golden settings.
+6. **Evaluation**: Evaluate 20 models under Base, Mix, and Golden settings.
 
 ---
 
@@ -81,7 +74,7 @@ DisastQA/
 <img src="./assets/pipeline.png" alt="DisastQA Construction Pipeline" width="85%"/>
 </p>
 
-*Figure: Overview of the Human–LLM collaborative pipeline for DisastQA construction and evaluation. The pipeline integrates query rewriting, human validation, and keypoint-based evaluation across MCQ and OE tracks.*
+*Figure: Overview of the Human–LLM collaborative pipeline. The pipeline integrates query rewriting, human validation, and keypoint-based evaluation across MCQ and OE tracks.*
 
 ---
 
@@ -112,7 +105,7 @@ The evaluation scripts use model configurations defined in `DATA/MCQ_evaluation/
 1. Download models to a local directory (e.g., `DATA/models/`)
 2. Update the `MODEL_CONFIGS` dictionary in the evaluation scripts with your model paths
 
-Example configuration:
+Example configuration inside the python scripts:
 ```python
 MODEL_CONFIGS = {
     "qwen-3-8b": {
@@ -162,22 +155,12 @@ python DATA/OE_evaluation/local_evaluation_with_difficulty.py \
 
 **Output**: Results are saved to `DATA/local_OE/{model_name}/{setting}_oe_with_difficulty.json`
 
-### 6️⃣ Regenerate Benchmark (Optional)
+### 6️⃣ Dataset Access
 
-**MCQ**:
-```bash
-python benchmark/MCQ/data_prepare.py
-python benchmark/MCQ/generate_mcq_set.py
-```
+The final evaluation datasets are provided in `DATA/final_mcq/` and `DATA/final_OE/`. These datasets were constructed using the collaborative pipeline described above.
 
-**OE**:
-```bash
-python benchmark/OE/generate_oe_from_mcq.py
-# or
-python benchmark/OE/generate_oe_set.py
-```
-
-⚠️ **Note**: Please keep all folder names and relative paths unchanged to ensure script compatibility.
+- **MCQ Data**: JSON files containing questions, options, and ground truth indices.
+- **OE Data**: JSON files containing questions, reference answers, and annotated keypoints used for the coverage metric.
 
 ---
 
@@ -197,7 +180,7 @@ Keypoint coverage explicitly measures whether models recall all essential disast
 
 - Retrieval quality strongly governs performance: Base < Mix < Golden across all models.
 - DisastQA rankings diverge from general-domain benchmarks (Spearman's ρ ≈ 0.2 vs. MMLU-Pro).
-- GPT-4o achieves 95.4% factual coverage, while open models like Qwen-3-8B reach 99.6% MCQ accuracy under Golden retrieval.
+- Gemini-3 Pro achieves 96.5% factual coverage (highest), while GPT-5.2 reaches 99.65% MCQ accuracy under Golden retrieval (highest). Open models like Qwen-3-8B also reach 99.65% MCQ accuracy.
 - High factual density: OE answers contain on average 4.4 atomic keypoints, reflecting multi-fact reasoning complexity.
 - Surface metrics (ROUGE/BERTScore) overestimate factuality—models often omit crucial details even when fluently written.
 
@@ -207,11 +190,13 @@ Keypoint coverage explicitly measures whether models recall all essential disast
 
 | Model | Params | MCQ (Golden) | OE Coverage (%) | Comment |
 | --- | --- | --- | --- | --- |
-| GPT-4o | — | 99.4 | 95.4 | Best factual completeness |
-| Gemini-1.5 Pro | — | 98.7 | 95.1 | Balanced fluency & accuracy |
-| Qwen-3-8B | 8B | 99.6 | 93.9 | Best open-source MCQ model |
-| Llama-3-8B | 8B | 99.1 | 93.4 | Strong reasoning; factual gaps |
-| Gemma-7B | 8.5B | 98.0 | 89.7 | Best ROUGE-L, lower factuality |
+| GPT-5.2 | — | 99.65 | 94.6 | Best MCQ accuracy |
+| Gemini-3 Pro | — | 96.70 | 96.5 | Best factual completeness (OE) |
+| GPT-4o | — | 99.35 | 95.4 | Strong overall performance |
+| Gemini-1.5 Pro | — | 98.70 | 95.1 | Balanced fluency & accuracy |
+| Qwen-3-8B | 8B | 99.65 | 94.0 | Best open-source MCQ model |
+| Llama-3-8B | 8B | 99.10 | 93.4 | Strong reasoning; factual gaps |
+| Gemma-7B | 8.5B | 98.10 | 89.7 | Best ROUGE-L, lower factuality |
 
 (Full results and difficulty breakdowns are available in the paper and Appendix.)
 
