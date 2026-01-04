@@ -35,18 +35,27 @@ DisastQA bridges this gap by providing a retrieval-aware, factual, and human-val
 
 ## 🧩 Repository Structure
 
-The repository focuses on the evaluation datasets and scoring scripts to facilitate reproducibility of the paper's results.
-
 ```
 DisastQA/
+├── benchmark/
+│   ├── MCQ/
+│   │   ├── data_prepare.py
+│   │   └── generate_mcq_set.py
+│   └── OE/
+│       ├── generate_oe_set.py
+│       └── generate_oe_from_mcq.py
+│
 ├── DATA/
-│   ├── final_mcq/                   # Dataset: base_2000.json, mix_2000.json, golden_2000.json
-│   ├── final_OE/                    # Dataset: base/mix/golden_oe_with_difficulty.json
-│   ├── MCQ_evaluation/              # Scripts: evaluation for MCQ (accuracy)
-│   └── OE_evaluation/               # Scripts: evaluation for OE (keypoint coverage)
+│   ├── final_mcq/                   # base_2000.json, mix_2000.json, golden_2000.json
+│   ├── final_OE/                    # base/mix/golden_oe_with_difficulty.json
+│   ├── local_MCQ/                   # model-specific MCQ results
+│   ├── local_OE/                    # model-specific OE results
+│   ├── MCQ_evaluation/              # evaluation scripts (local/closed)
+│   ├── OE_evaluation/               # evaluation scripts (local/difficulty)
+│   └── raw_annotations/             # annotation/intermediate artifacts
 │
 ├── assets/
-│   └── pipeline.png                 # Figure: Pipeline diagram
+│   └── pipeline.png                 # Pipeline diagram
 │
 ├── requirements.txt
 ├── LICENSE
@@ -56,8 +65,6 @@ DisastQA/
 ---
 
 ## ⚙️ Data Pipeline Summary
-
-To construct DisastQA, we employed a Human-LLM collaborative pipeline (detailed in the paper):
 
 1. **Extraction**: Extract (query, passage) pairs with relevance score = 3 from DisastIR corpus.
 2. **Drafting**: Use an LLM to rewrite queries → QA-style questions (MCQ/OE).
@@ -74,7 +81,7 @@ To construct DisastQA, we employed a Human-LLM collaborative pipeline (detailed 
 <img src="./assets/pipeline.png" alt="DisastQA Construction Pipeline" width="85%"/>
 </p>
 
-*Figure: Overview of the Human–LLM collaborative pipeline. The pipeline integrates query rewriting, human validation, and keypoint-based evaluation across MCQ and OE tracks.*
+*Figure: Overview of the Human–LLM collaborative pipeline for DisastQA construction and evaluation. The pipeline integrates query rewriting, human validation, and keypoint-based evaluation across MCQ and OE tracks.*
 
 ---
 
@@ -105,7 +112,7 @@ The evaluation scripts use model configurations defined in `DATA/MCQ_evaluation/
 1. Download models to a local directory (e.g., `DATA/models/`)
 2. Update the `MODEL_CONFIGS` dictionary in the evaluation scripts with your model paths
 
-Example configuration inside the python scripts:
+Example configuration:
 ```python
 MODEL_CONFIGS = {
     "qwen-3-8b": {
@@ -155,12 +162,22 @@ python DATA/OE_evaluation/local_evaluation_with_difficulty.py \
 
 **Output**: Results are saved to `DATA/local_OE/{model_name}/{setting}_oe_with_difficulty.json`
 
-### 6️⃣ Dataset Access
+### 6️⃣ Regenerate Benchmark (Optional)
 
-The final evaluation datasets are provided in `DATA/final_mcq/` and `DATA/final_OE/`. These datasets were constructed using the collaborative pipeline described above.
+**MCQ**:
+```bash
+python benchmark/MCQ/data_prepare.py
+python benchmark/MCQ/generate_mcq_set.py
+```
 
-- **MCQ Data**: JSON files containing questions, options, and ground truth indices.
-- **OE Data**: JSON files containing questions, reference answers, and annotated keypoints used for the coverage metric.
+**OE**:
+```bash
+python benchmark/OE/generate_oe_from_mcq.py
+# or
+python benchmark/OE/generate_oe_set.py
+```
+
+⚠️ **Note**: Please keep all folder names and relative paths unchanged to ensure script compatibility.
 
 ---
 
