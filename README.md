@@ -244,7 +244,7 @@ If you use DisastQA in your research, please cite:
 
 ```bibtex
 @dataset{disastqa_2025_anonymous,
-  title   = {DisastQA: A Benchmark for Disaster-Domain Question Answering},
+  title   = {DisastQA: A Comprehensive Benchmark for Evaluating Question Answering in Disaster Management},
   author  = {Anonymous Authors},
   year    = {2025},
   note    = {Under Review}
