@@ -178,13 +178,14 @@ Keypoint coverage explicitly measures whether models recall all essential disast
 
 ## 🧠 Highlighted Findings
 
-- **Retrieval quality strongly governs performance**: Base < Mix < Golden across all models, with GPT-5.2 achieving 93.1% accuracy in Base (no-context) setting.
-- **Performance gaps narrow in optimal conditions**: Open models like Qwen-3-8B reach 99.65% MCQ accuracy under Golden retrieval, matching frontier models, but gaps persist in Base setting (88.7% vs. GPT-5.2's 93.1%).
-- **Robustness to noise differs across models**: While GPT-5.2 achieves the highest absolute accuracy in Mix (96.7%), Gemini-3 Pro exhibits the strongest relative robustness with the smallest performance drop from Golden to Mix, indicating superior ability to filter irrelevant passages.
-- **Factual completeness vs. fluency trade-off**: Gemini-3 Pro achieves 96.5% Keypoint Coverage (highest for OE), while GPT-5.2 reaches 99.65% MCQ accuracy (highest). Gemma-7B achieves high ROUGE-L scores but lower factual completeness, revealing a critical fluency-factuality trade-off.
-- **Domain transfer gaps**: DisastQA rankings diverge substantially from general-domain benchmarks (Spearman's ρ ≈ 0.2 vs. MMLU-Pro), confirming that general-domain performance does not guarantee reliability in safety-critical scenarios.
-- **High factual density**: OE answers contain on average 4.4 atomic keypoints (SD=1.55), reflecting the multi-fact reasoning complexity characteristic of disaster-response QA.
+- **Retrieval quality strongly governs performance**: Base < Mix < Golden across all models, with GPT-5.2 achieving 93.1% accuracy in the Base (no-context) setting.
+- **Performance gaps narrow in optimal conditions**: Open models like Qwen-3-8B reach 99.65% MCQ accuracy under Golden retrieval, matching frontier models, but gaps persist in the Base MCQ setting (≈88.6% vs. GPT-5.2’s 93.1%).
+- **Robustness to noise differs across models**: While GPT-5.2 achieves the highest absolute accuracy in Mix (96.7%), Gemini-3 Pro exhibits the strongest relative robustness in MCQ accuracy, with the smallest performance drop from Golden to Mix, indicating superior ability to filter irrelevant passages.
+- **Factual completeness vs. fluency trade-off**: Gemini-3 Pro achieves 96.5% Keypoint Coverage (highest for OE), while GPT-5.2 reaches 99.65% MCQ accuracy (highest). Gemma-7B achieves high ROUGE-L scores but lower factual completeness, revealing a critical fluency–factuality trade-off.
+- **Domain transfer gaps**: DisastQA rankings diverge substantially from general-domain benchmarks (Spearman's ρ ≈ 0.2 vs. MMLU-Pro; see paper for details), confirming that general-domain performance does not guarantee reliability in safety-critical scenarios.
+- **High factual density**: OE answers contain on average 4.4 atomic keypoints (SD = 1.55), reflecting the multi-fact reasoning complexity characteristic of disaster-response QA.
 - **Surface metrics overestimate factuality**: ROUGE/BERTScore overestimate correctness—models often omit crucial quantitative details even when producing fluently written responses.
+
 
 ---
 
