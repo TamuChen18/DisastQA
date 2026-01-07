@@ -192,15 +192,16 @@ Keypoint coverage explicitly measures whether models recall all essential disast
 
 | Model | Params | MCQ (Golden) | OE Coverage (%) | Comment |
 | --- | --- | --- | --- | --- |
-| GPT-5.2 | — | 99.65 | 94.6 | Best MCQ accuracy |
-| Gemini-3 Pro | — | 96.70 | 96.5 | Best factual completeness (OE) |
-| GPT-4o | — | 99.35 | 95.4 | Strong overall performance |
-| Gemini-1.5 Pro | — | 98.70 | 95.1 | Balanced fluency & accuracy |
-| Qwen-3-8B | 8B | 99.65 | 94.0 | Best open-source MCQ model |
+| GPT-5.2 | — | 99.65 | 94.6 | Best MCQ accuracy (Golden) |
+| Gemini-3 Pro | — | 96.70 | 96.5 | Best OE factual completeness (Coverage) |
+| GPT-4o | — | 99.35 | 95.4 | Strong overall performance across MCQ and OE |
+| Gemini-1.5 Pro | — | 98.70 | 95.1 | Balanced MCQ accuracy and OE coverage |
+| Qwen-3-8B | 8B | 99.65 | 94.0 | Best open-source MCQ model (Golden) |
 | Llama-3-8B | 8B | 99.10 | 93.4 | Strong reasoning; factual gaps |
-| Gemma-7B | 8.5B | 98.10 | 89.7 | Best ROUGE-L, lower factuality |
+| Gemma-7B | 8.5B | 98.10 | 89.7 | Best surface-level metrics (ROUGE/BLEU), lower factual coverage |
 
 (Full results and difficulty breakdowns are available in the paper and Appendix.)
+
 
 ---
 
