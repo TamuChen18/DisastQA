@@ -1,4 +1,4 @@
-# 🧠 DisastQA: Datasets and Evaluation for Disaster-Domain Question Answering
+# 🧠 DisastQA: A Comprehensive Benchmark for Evaluating Question Answering in Disaster Management
 
 **DisastQA** is the first large-scale benchmark for disaster-response question answering (QA).
 It explicitly models retrieval uncertainty and factual completeness—two defining characteristics of real disaster scenarios—to evaluate how well LLMs reason and respond under incomplete, noisy, or conflicting information.
